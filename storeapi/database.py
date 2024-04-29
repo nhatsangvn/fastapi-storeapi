@@ -1,8 +1,8 @@
 import databases
 import sqlalchemy
-from configp import config
+from storeapi.config import config
 
-metadata = sqlalchemy.Metadata()
+metadata = sqlalchemy.MetaData()
 
 post_table = sqlalchemy.Table(
     "posts",

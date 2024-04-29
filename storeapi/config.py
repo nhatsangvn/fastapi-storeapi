@@ -1,14 +1,13 @@
 from functools import lru_cache
 from typing import Optional
 
-from pydantic import BaseSettings
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class BaseConfig(BaseSettings):
     ENV_STATE: Optional[str] = None
 
-    class Config:
-        env_file: str = ".env"
+    model_config = SettingsConfigDict(env_file=".env", extra="allow")
 
 
 class GlobalConfig(BaseConfig):
@@ -17,21 +16,17 @@ class GlobalConfig(BaseConfig):
 
 
 class DevConfig(GlobalConfig):
-    class Config:
-        env_prefix: str = "DEV_"
+    model_config = SettingsConfigDict(env_prefix="DEV_")
 
 
 class ProdConfig(GlobalConfig):
-    class Config:
-        env_prefix: str = "PROD_"
+    model_config = SettingsConfigDict(env_prefix="PROD_")
 
 
 class TestConfig(GlobalConfig):
-    DATABASE_URL = "sqlite://test.db"
-    DB_FORCE_ROLL_BACK: True
-
-    class Config:
-        env_prefix: str = "TEST_"
+    model_config = SettingsConfigDict(env_prefix="TEST_")
+    DATABASE_URL: str = "sqlite://test.db"
+    DB_FORCE_ROLL_BACK: bool = True
 
 
 @lru_cache

@@ -26,7 +26,7 @@ async def created_post(async_client: AsyncClient):
 
 @pytest.fixture()
 async def created_comment(async_client: AsyncClient, created_post: dict):
-    return await create_comment("Test Comment", 0, async_client)
+    return await create_comment("Test Comment", 1, async_client)
 
 
 @pytest.mark.anyio
@@ -37,7 +37,7 @@ async def test_create_post(async_client: AsyncClient):
         json={"body": body},
     )
     assert response.status_code == 201
-    assert {"id": 0, "body": "Test Post"}.items() <= response.json().items()
+    assert {"id": 1, "body": "Test Post"}.items() <= response.json().items()
 
 
 # note that we pass created_post as argument so it will be created first
@@ -51,9 +51,9 @@ async def test_create_comment(async_client: AsyncClient, created_post: dict):
     )
     assert response.status_code == 201
     assert {
-        "id": 0,
+        "id": 1,
         "body": "Test Comment",
-        "post_id": 0,
+        "post_id": 1,
     }.items() <= response.json().items()
 
 
@@ -115,9 +115,10 @@ async def test_get_post_with_comment(async_client: AsyncClient, created_post: di
         "comment": [created_comment]
     }
 
+
 @pytest.mark.anyio
 async def test_get_comment_on_mising_post(async_client: AsyncClient):
-    response = await async_client.get(f"/post/-1")
+    response = await async_client.get("/post/-1")
 
     assert response.status_code == 404
     assert response.json() == {'detail': 'Post not found'}
