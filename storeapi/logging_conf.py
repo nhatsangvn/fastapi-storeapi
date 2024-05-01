@@ -1,7 +1,7 @@
 from logging.config import dictConfig
 
 from storeapi.config import DevConfig, config
-from asgi_correlation_id import CorrelationIdMiddleware
+
 
 def configure_logging() -> None:
     dictConfig(
@@ -22,11 +22,11 @@ def configure_logging() -> None:
                     "format": "(%(correlation_id)s) %(name)s:%(lineno)d - %(message)s"
                 },
                 "file": {
-                    "class": "logging.Formatter",
+                    "class": "pythonjsonlogger.jsonlogger.JsonFormatter",
                     "datefmt": "%Y-%m-%dT%H:%M:%S",
                     # For JsonFormatter, the format string just defines what keys are included in the log record
                     # It's a bit clunky, but it's the way to do it for now
-                    "format": "%(asctime)s.%(msecs)03d | %(levelname)-8s | [%(correlation_id)s] %(name)s:%(lineno)d %(message)s",
+                    "format": "%(asctime)s %(levelname)-8s %(correlation_id)s %(name)s %(lineno)d %(message)s",
                 },
             },
             "handlers": {

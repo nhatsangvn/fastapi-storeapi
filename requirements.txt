@@ -1,7 +1,8 @@
 fastapi
 uvicorn[standard]
-sqlalchemy
-databases[aiosqlite]
-python-dotenv
-rich
-asgi-correlation-id
+sqlalchemy # database
+databases[aiosqlite] # database
+python-dotenv # env
+rich    # log formatter
+asgi-correlation-id # correlation request-id
+python-json-logger # json log file

@@ -1,5 +1,5 @@
-ruff
-black
-isort
-pytest
-httpx
+ruff # linter
+black # format code
+isort # format import section
+pytest # run test
+httpx # run test
