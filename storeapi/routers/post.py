@@ -34,7 +34,7 @@ async def create_post(post: UserPostIn):
     query = post_table.insert().values(data)
 
     # new_post = {**data, "id": last_record_id}
-    logger.debug(query)storeapi
+    logger.debug(query)
     last_record_id = await database.execute(query)
 
     return {**data, "id": last_record_id}
