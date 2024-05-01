@@ -1,4 +1,4 @@
-a simple RestAPI Server based on FastAPI
+a simple RestAPI Server based on FastAPI, including:
 
 - request/response
 - database schema
