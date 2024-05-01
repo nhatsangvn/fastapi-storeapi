@@ -17,7 +17,7 @@ logger = logging.getLogger(__name__)
 
 
 async def find_post(post_id: int):
-    logger.info("Finding post {post_id}")
+    logger.info(f"Finding post {post_id}")
 
     query = post_table.select().where(post_table.c.id == post_id)
 
@@ -34,7 +34,7 @@ async def create_post(post: UserPostIn):
     query = post_table.insert().values(data)
 
     # new_post = {**data, "id": last_record_id}
-    logger.debug(query)
+    logger.debug(query)storeapi
     last_record_id = await database.execute(query)
 
     return {**data, "id": last_record_id}
@@ -52,7 +52,7 @@ async def get_all_post():
 
 @router.post("/comment", response_model=Comment, status_code=201)
 async def create_comment(comment: CommentIn):
-    logger.info("Creating comment on post")
+    logger.info(f"Creating comment on post {comment.post_id}")
 
     post = await find_post(comment.post_id)
 
@@ -69,7 +69,7 @@ async def create_comment(comment: CommentIn):
 
 @router.get("/post/{post_id}/comment", response_model=list[Comment])
 async def get_comment_on_post(post_id: int):
-    logger.info("Getting comments on post")
+    logger.info(f"Getting comments on post {post_id}")
 
     post = await find_post(post_id)
 
@@ -84,7 +84,7 @@ async def get_comment_on_post(post_id: int):
 
 @router.get("/post/{post_id}", response_model=UserPostWithComments)
 async def get_post_with_comment(post_id: int):
-    logger.info("Getting post and its comments")
+    logger.info(f"Getting post {post_id} and its comments")
 
     post = await find_post(post_id)
 
