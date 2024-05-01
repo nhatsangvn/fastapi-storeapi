@@ -1,32 +1,40 @@
 from logging.config import dictConfig
 
 from storeapi.config import DevConfig, config
-
+from asgi_correlation_id import CorrelationIdMiddleware
 
 def configure_logging() -> None:
     dictConfig(
         {
             "version": 1,
             "disable_existing_logger": False,
+            "filters": {
+                "correlation_id": {
+                    "()": "asgi_correlation_id.CorrelationIdFilter",
+                    "uuid_length": 8 if isinstance(config, DevConfig) else 36,
+                    "default_value": "-",
+                }
+            },
             "formatters": {
                 "console": {
                     "class": "logging.Formatter",
                     "datefmt": "%Y-%m-%dT%H:%M:%S",
-                    "format": "%(name)s:%(lineno)d - %(message)s"
+                    "format": "(%(correlation_id)s) %(name)s:%(lineno)d - %(message)s"
                 },
                 "file": {
                     "class": "logging.Formatter",
                     "datefmt": "%Y-%m-%dT%H:%M:%S",
                     # For JsonFormatter, the format string just defines what keys are included in the log record
                     # It's a bit clunky, but it's the way to do it for now
-                    "format": "%(asctime)s.%(msecs)03d | %(levelname)-8s | %(name)s:%(lineno)d %(message)s",
+                    "format": "%(asctime)s.%(msecs)03d | %(levelname)-8s | [%(correlation_id)s] %(name)s:%(lineno)d %(message)s",
                 },
             },
             "handlers": {
                 "default": {
                     "class": "rich.logging.RichHandler",
                     "level": "DEBUG",
-                    "formatter": "console"
+                    "formatter": "console",
+                    "filters": ["correlation_id"],
                 },
                 "rotating_file": {
                     "class": "logging.handlers.RotatingFileHandler",
@@ -36,6 +44,7 @@ def configure_logging() -> None:
                     "maxBytes": 1024 * 1024,  # 1 MB
                     "backupCount": 5,
                     "encoding": "utf8",
+                    "filters": ["correlation_id"],
                 },
             },
             "loggers": {
