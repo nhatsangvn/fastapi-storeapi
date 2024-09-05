@@ -6,3 +6,5 @@ python-dotenv # env
 rich    # log formatter
 asgi-correlation-id # correlation request-id
 python-json-logger # json log file
+pydantic-settings==2.2.1
+prometheus_client==0.20.0 # expose /metrics
