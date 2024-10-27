@@ -13,3 +13,7 @@ logger = logging.getLogger(__name__)
 async def slow():
   await asyncio.sleep(10)
   return Response(content="OK", media_type="text/plain")
+
+@router.get("/test", response_model=dict)
+async def test():
+  return {"msg": "Hello World!!!"}

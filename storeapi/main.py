@@ -37,6 +37,11 @@ app.include_router(post_router)
 app.include_router(comment_router)
 app.include_router(test_router)
 
+def normalize_path(path: str) -> str:
+    if path.startswith("/post/"):
+        return "/post/{id}"
+    return path
+
 ### expose Summary: based on /path
 REQUEST_LATENCY = Summary(
     "http_request_latency_seconds",
@@ -58,12 +63,13 @@ async def prometheus_middleware(request: Request, call_next):
     response = await call_next(request)
     request_latency = time.time() - start_time
 
+    path = normalize_path(request.url.path)
     # Observe the request latency with method, path, and status_code as labels
     # exclude 404
     if response.status_code != 404:
         REQUEST_LATENCY.labels(
             method=request.method,
-            path=request.url.path,
+            path=path,
             status_code=str(response.status_code),
         ).observe(request_latency)
     return response
