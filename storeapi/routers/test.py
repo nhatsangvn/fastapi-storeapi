@@ -16,4 +16,4 @@ async def slow():
 
 @router.get("/test", response_model=dict)
 async def test():
-  return {"msg": "Hello World!!!"}
+  return {"msg": "Hello World!!! Release Success!"}
